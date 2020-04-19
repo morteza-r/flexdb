@@ -6,15 +6,15 @@ import (
 )
 
 type Query struct {
-	Table     string  `json:"table"`
-	QId       string  `json:"id"`
-	Doc       *Doc    `json:"doc"`
-	Where     []Where `json:"where"`
-	WhereType string  `json:"where_type"`
-	Order     Order   `json:"order"`
-	Limit int           `json:"limit"`
-	Type  string        `json:"type"`
-	Took  time.Duration `json:"took"`
+	Table     string        `json:"table"`
+	QId       string        `json:"id"`
+	Doc       *Doc          `json:"doc"`
+	Where     []Where       `json:"where"`
+	WhereType string        `json:"where_type"`
+	Order     Order         `json:"order"`
+	Limit     int           `json:"limit"`
+	Type      string        `json:"type"`
+	Took      time.Duration `json:"took"`
 }
 
 type Where struct {
