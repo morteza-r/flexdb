@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"reflect"
 	"sort"
-	"strconv"
 	"strings"
 )
 
@@ -102,7 +101,7 @@ func (db *Database) Add(tableName *string, doc *Doc) (err error) {
 	}
 	_, ok := t.Docs.Load(id)
 	if ok {
-		err = errors.New("duplicate doc id found" + strconv.FormatInt(int64(id), 10))
+		err = errors.New("duplicate doc id found")
 		return
 	}
 	t.Docs.Store(id, *doc)
