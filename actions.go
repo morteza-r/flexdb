@@ -97,7 +97,19 @@ func (db *Database) Add(tableName *string, doc *Doc) (err error) {
 	t := table.(*Table)
 	id, err := doc.GetId()
 	if err != nil {
-		return err
+		indexKey := "id_float64"
+		tableIndex, ok := t.Indexes.Load(indexKey)
+		if !ok {
+			id = 1
+		} else {
+			ti := tableIndex.(*[]IndexItem)
+			lastItem := (*ti)[len(*ti)-1]
+			id = lastItem.Id + 1
+		}
+		err = doc.SetId(id)
+		if err != nil {
+			return
+		}
 	}
 	_, ok := t.Docs.Load(id)
 	if ok {
