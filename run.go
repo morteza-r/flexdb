@@ -42,6 +42,16 @@ func (db *Database) GetQuery(q Query) (result interface{}, err error) {
 	return
 }
 
+func (db *Database) ExistQuery(q Query) (result interface{}, err error) {
+	err = db.Get(&q.Table, q.Doc)
+	if err != nil {
+		return nil, err
+	}
+	result = q.Doc
+
+	return
+}
+
 func (db *Database) ReplaceQuery(q Query) (result interface{}, err error) {
 	// single replace
 	if len(q.Where) == 0 {
