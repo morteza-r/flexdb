@@ -8,18 +8,62 @@ func (db *Database) AddQuery(q Query) (result interface{}, err error) {
 	return
 }
 
-func (db *Database) GetQuery(q Query) (result interface{}, err error) {
-	// single doc
-	if !q.Doc.IsEmpty() {
-		err = db.Get(&q.Table, q.Doc)
-		if err != nil {
-			return nil, err
-		}
-		result = q.Doc
-
+func (db *Database) AllQuery(q Query) (result interface{}, err error) {
+	// all docs need
+	var docs []Doc
+	err = db.All(q, &docs)
+	if err != nil {
 		return
 	}
+	result = docs
 
+	return
+}
+
+func (db *Database) GetQuery(q Query) (result interface{}, err error) {
+	// where exist
+	if len(q.Where) != 0 {
+		filteredDocs, err := db.WhereQuery(q)
+		if err != nil {
+			return result, err
+		}
+		if len(filteredDocs) > 0 {
+			result = &filteredDocs[0]
+		}
+
+		//fmt.Println(">> 1, result, err", result, err)
+		return result, err
+	}
+
+	//single doc
+	_, err = q.Doc.GetId()
+	if err == nil {
+		if !q.Doc.IsEmpty() {
+			err = db.Get(&q.Table, q.Doc)
+			if err != nil {
+				return nil, err
+			}
+			result = q.Doc
+
+			//fmt.Println(">> 2, result, err", result, err)
+			return
+		}
+	}
+
+	//// all docs need
+	//var docs []Doc
+	//err = db.All(q, &docs)
+	//if err != nil {
+	//	return
+	//}
+	//if len(docs) > 0 {
+	//	result = &docs[0]
+	//}
+
+	return
+}
+
+func (db *Database) MGetQuery(q Query) (result interface{}, err error) {
 	// where exist
 	if len(q.Where) != 0 {
 		filteredDocs, err := db.WhereQuery(q)
@@ -43,16 +87,6 @@ func (db *Database) GetQuery(q Query) (result interface{}, err error) {
 }
 
 func (db *Database) ExistsQuery(q Query) (result interface{}, err error) {
-	// single doc
-	if !q.Doc.IsEmpty() {
-		err = db.Get(&q.Table, q.Doc)
-		if err != nil {
-			return false, err
-		}
-
-		return true, err
-	}
-
 	// where exist
 	if len(q.Where) != 0 {
 		filteredDocs, err := db.WhereQuery(q)
@@ -62,6 +96,16 @@ func (db *Database) ExistsQuery(q Query) (result interface{}, err error) {
 		if len(filteredDocs) > 0 {
 			return true, err
 		}
+	}
+
+	// single doc
+	if !q.Doc.IsEmpty() {
+		err = db.Get(&q.Table, q.Doc)
+		if err != nil {
+			return false, err
+		}
+
+		return true, err
 	}
 
 	return

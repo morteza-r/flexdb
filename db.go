@@ -30,8 +30,18 @@ func (db *Database) Run(q *Query) (result interface{}, err error) {
 		return
 	}
 	switch q.Type {
+	case "all":
+		result, err = db.AllQuery(*q)
+		if err != nil {
+			return
+		}
 	case "get":
 		result, err = db.GetQuery(*q)
+		if err != nil {
+			return
+		}
+	case "mget":
+		result, err = db.MGetQuery(*q)
 		if err != nil {
 			return
 		}
