@@ -231,6 +231,10 @@ func (db *Database) Where(tableName *string, wheres *[]Where, whereType *string)
 		}
 
 		ti := tableIndex.(*[]IndexItem)
+		//TODO all searches are case insensitive fix it!
+		if reflect.TypeOf(where.Value).String() == "string" {
+			where.Value = strings.ToLower(where.Value.(string))
+		}
 		firstIndex := firstOccurrence(*ti, 0, len(*ti)-1, where.Value, len(*ti))
 		lastIndex := lastOccurrence(*ti, 0, len(*ti)-1, where.Value, len(*ti))
 		if firstIndex != -1 {
