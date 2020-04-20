@@ -35,8 +35,8 @@ func (db *Database) Run(q *Query) (result interface{}, err error) {
 		if err != nil {
 			return
 		}
-	case "exist":
-		result, err = db.ExistQuery(*q)
+	case "exists":
+		result, err = db.ExistsQuery(*q)
 		if err != nil {
 			return
 		}
