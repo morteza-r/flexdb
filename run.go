@@ -42,12 +42,27 @@ func (db *Database) GetQuery(q Query) (result interface{}, err error) {
 	return
 }
 
-func (db *Database) ExistQuery(q Query) (result interface{}, err error) {
-	err = db.Get(&q.Table, q.Doc)
-	if err != nil {
-		return nil, err
+func (db *Database) ExistsQuery(q Query) (result interface{}, err error) {
+	// single doc
+	if !q.Doc.IsEmpty() {
+		err = db.Get(&q.Table, q.Doc)
+		if err != nil {
+			return false, err
+		}
+
+		return true, err
 	}
-	result = q.Doc
+
+	// where exist
+	if len(q.Where) != 0 {
+		filteredDocs, err := db.WhereQuery(q)
+		if err != nil {
+			return false, err
+		}
+		if len(filteredDocs) > 0 {
+			return true, err
+		}
+	}
 
 	return
 }
