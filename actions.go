@@ -103,8 +103,12 @@ func (db *Database) Add(tableName *string, doc *Doc) (err error) {
 			id = 1
 		} else {
 			ti := tableIndex.(*[]IndexItem)
-			lastItem := (*ti)[len(*ti)-1]
-			id = lastItem.Id + 1
+			if len(*ti) == 0 {
+				id = 1
+			} else {
+				lastItem := (*ti)[len(*ti)-1]
+				id = lastItem.Id + 1
+			}
 		}
 		err = doc.SetId(id)
 		if err != nil {
