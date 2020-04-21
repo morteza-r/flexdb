@@ -87,6 +87,7 @@ func (db *Database) MGetQuery(q Query) (result interface{}, err error) {
 }
 
 func (db *Database) ExistsQuery(q Query) (result interface{}, err error) {
+	result = false
 	// where exist
 	if len(q.Where) != 0 {
 		filteredDocs, err := db.WhereQuery(q)
@@ -94,7 +95,9 @@ func (db *Database) ExistsQuery(q Query) (result interface{}, err error) {
 			return false, err
 		}
 		if len(filteredDocs) > 0 {
-			return true, err
+			return true, nil
+		} else {
+			return false, nil
 		}
 	}
 
@@ -105,7 +108,7 @@ func (db *Database) ExistsQuery(q Query) (result interface{}, err error) {
 			return false, err
 		}
 
-		return true, err
+		return true, nil
 	}
 
 	return
